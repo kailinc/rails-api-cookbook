@@ -1,5 +1,5 @@
 class IngredientsController < ApplicationController
-  before_action :set_ingredient, only: [:show, :destroy]
+  before_action :set_ingredient, only: [:show, :destroy, :update]
 
   def index
     @ingredients = Ingredient.all
@@ -15,7 +15,19 @@ class IngredientsController < ApplicationController
     head :no_content
   end
 
+  def update
+    if @ingredient.update(ingredient_param)
+      head :no_content
+    else
+      render json: @ingredient.errors, status: :unprocessable_entity
+    end
+  end
+
   def set_ingredient
     @ingredient = Ingredient.find(params[:id])
+  end
+
+  def ingredient_param
+    params.require(:ingredient).permit(:name, :unit)
   end
 end
